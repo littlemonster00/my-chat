@@ -1,15 +1,23 @@
 const path = require("path");
 module.exports = {
-  entry: "./src/app.js",
+  entry: "./src/app.jsx",
   output: {
-    path: path.join(__dirname, "public/dist/"),
+    path: path.join(__dirname, "public", "dist"),
     filename: "bundle.js"
   },
   module: {
-    rules: [{ loader: "babel-loader", test: /\.js$/, exclude: /node_modules/ }]
+    rules: [
+      {
+        loader: "babel-loader",
+        test: /\.(js|jsx)$/,
+        exclude: /node_modules/
+      }
+    ]
   },
   devtool: "inline-source-map",
   devServer: {
-    contentBase: path.join(__dirname, "public")
+    contentBase: path.join(__dirname, "public"),
+    historyApiFallback: true,
+    publicPath: "/dist/"
   }
 };
