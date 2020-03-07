@@ -2,7 +2,7 @@ export default [
   {
     id: "1",
     author: "1",
-    text: "Hello. how are you",
+    text: "Good Sang",
     createAt: 0,
     lastSeen: 10
   },

@@ -1,19 +1,20 @@
 import React from "react";
+import { connect } from "react-redux";
 import { Message } from "./Message.jsx";
 import "../styles/components/MessageViewContainer.scss";
-import messages from "./playground/messages.js";
 
 export class MessageViewContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       userId: "1",
-      messages: [{}],
+      messages: props.messages || [],
       count: 10
     };
   }
   renderMessages() {
     const messagesRender = [];
+    const messages = this.state.messages;
     for (let i = 0; i < messages.length - 1; i++) {
       if (messages[i].author !== messages[i + 1].author) {
         messagesRender.push(
@@ -45,3 +46,9 @@ export class MessageViewContainer extends React.Component {
     console.log("component did mount");
   }
 }
+const mapStateToProps = state => {
+  return {
+    messages: state.messages
+  };
+};
+export default connect(mapStateToProps)(MessageViewContainer);
