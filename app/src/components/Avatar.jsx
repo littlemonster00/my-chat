@@ -5,7 +5,7 @@ export class Avatar extends React.Component {
   render() {
     return (
       <div className="avatar-container">
-        {this.props.lastMessage === true && (
+        {this.props.visible === true && (
           <img className="avatar" src={avatar} alt="avatar" />
         )}
       </div>

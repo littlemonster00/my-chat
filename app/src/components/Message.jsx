@@ -13,7 +13,7 @@ export class Message extends React.Component {
         }
       >
         {this.props.lastMessage === true ? (
-          <Avatar lastMessage={this.props.lastMessage} />
+          <Avatar visible={true} />
         ) : (
           <Avatar />
         )}
