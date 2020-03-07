@@ -6,7 +6,7 @@ export class Header extends React.Component {
     return (
       <div className="Header">
         <h5>Sang Le</h5>
-        <p>Last seen 23 minutes ago</p>
+        Last seen 23 minutes ago
       </div>
     );
   }
