@@ -1,5 +1,7 @@
 .message-view-container {
   background-color: silver;
   height: 70%;
-  overflow: scroll;
+  display: flex;
+  flex-direction: column;
+  overflow-y: scroll;
 }

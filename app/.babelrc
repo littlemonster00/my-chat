@@ -1,4 +1,4 @@
 {
-  "presets": ["env", "react"]
-  //   "plugins": ["transform-react-jsx"]
+  "presets": ["env", "react"],
+  "plugins": ["transform-react-jsx"]
 }

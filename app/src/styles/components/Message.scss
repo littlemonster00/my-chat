@@ -1,0 +1,26 @@
+.message {
+  background-color: #cce1ff;
+  width: fit-content;
+  min-width: 32px;
+  border-radius: 5px;
+  padding: 12px;
+  margin: 0 1rem;
+  max-width: 44%;
+}
+.text {
+  word-wrap: break-word;
+  word-break: break-word;
+  font-size: 15px;
+  text-shadow: 0px 0 0px rgba(0, 0, 0, 0.4);
+  color: #222222;
+}
+.message-container {
+  padding: 8px;
+  margin: 2px;
+  display: flex;
+}
+.seft {
+  flex-direction: row-reverse;
+}
+.mine {
+}
