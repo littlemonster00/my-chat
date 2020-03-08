@@ -8,13 +8,19 @@ export class MessageViewContainer extends React.Component {
     super(props);
     this.state = {
       userId: "1",
-      messages: props.messages || [],
       count: 10
     };
   }
+  updateScroll = () => {
+    var element = document.getElementById("message-views");
+    element.scrollTop = element.scrollHeight;
+  };
+  componentDidUpdate = () => {
+    this.updateScroll();
+  };
   renderMessages() {
     const messagesRender = [];
-    const messages = this.state.messages;
+    const messages = this.props.messages;
     for (let i = 0; i < messages.length - 1; i++) {
       if (messages[i].author !== messages[i + 1].author) {
         messagesRender.push(
@@ -34,12 +40,24 @@ export class MessageViewContainer extends React.Component {
           />
         );
       }
+      if (i + 2 === messages.length) {
+        messagesRender.push(
+          <Message
+            lastMessage={true}
+            key={messages[i + 1].id}
+            message={messages[i + 1]}
+            me={messages[i + 1].author === this.state.userId ? true : false}
+          />
+        );
+      }
     }
     return messagesRender;
   }
   render() {
     return (
-      <div className="message-view-container">{this.renderMessages()}</div>
+      <div className="message-view-container" id="message-views">
+        {this.renderMessages()}
+      </div>
     );
   }
   componentDidMount() {

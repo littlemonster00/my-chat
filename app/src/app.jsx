@@ -3,7 +3,7 @@ import ReactDOM from "react-dom";
 import { Provider } from "react-redux";
 import { Header } from "./components/Header.jsx";
 import MessageViewContainer from "./components/MessageViewContainer.jsx";
-import { ChatInput } from "./components/ChatInput.jsx";
+import ChatInput from "./components/ChatInput.jsx";
 import { SideBar } from "./components/SideBar.jsx";
 import configStore from "./store/configStore";
 import "bootstrap/dist/css/bootstrap.css";
