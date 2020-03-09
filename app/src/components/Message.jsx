@@ -3,7 +3,6 @@ import "../styles/components/Message.scss";
 import { Avatar } from "./Avatar.jsx";
 export class Message extends React.Component {
   render() {
-    console.log(this.props.me);
     return (
       <div
         className={
