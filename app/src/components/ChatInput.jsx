@@ -8,21 +8,14 @@ export class ChatInput extends React.Component {
   };
   handleTextChange = e => {
     const textInput = e.target.value;
-    this.setState(() => ({
-      textInput
-    }));
+    if (textInput !== "\n")
+      this.setState(() => ({
+        textInput
+      }));
   };
   onEnterKePress = event => {
-    if (event.keyCode == 13 && !event.shiftKey) {
-      this.sendMessage();
-    }
+    if (event.keyCode == 13 && !event.shiftKey) this.sendMessage();
   };
-  /*   autoGrow = oField => {
-    console.log(oField);
-    if (oField.scrollHeight > oField.clientHeight) {
-      oField.style.height = oField.scrollHeight + "px";
-    }
-  }; */
   sendMessage = e => {
     this.props.sendMessage({
       author: Math.floor(Math.random() * 2 + 1).toString(),
@@ -48,6 +41,7 @@ export class ChatInput extends React.Component {
         ></textarea>
         {this.state.textInput && (
           <button
+            type="submit"
             className="btn btn-success btn-send-msg"
             onClick={this.sendMessage}
           >
