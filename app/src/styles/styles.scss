@@ -2,8 +2,12 @@
   display: flex;
 }
 .container {
+  background: #ecf3ff;
   height: 100vh;
   max-width: 100%;
   margin: 0;
   padding: 0;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
 }

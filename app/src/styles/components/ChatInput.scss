@@ -1,8 +1,11 @@
 .chat-input {
   display: flex;
-  background-color: skyblue;
   padding: 1rem;
+  max-height: 25%;
 }
 .noscrollbars {
   overflow: hidden;
+}
+.input-msg {
+  max-height: 132px;
 }

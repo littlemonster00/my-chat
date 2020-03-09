@@ -13,7 +13,7 @@ const store = configStore();
 const MyChat = props => {
   return (
     <div className="workspace">
-      <SideBar />
+      {/* <SideBar /> */}
       <div className="container">
         <Header />
         <MessageViewContainer />

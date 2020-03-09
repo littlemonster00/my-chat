@@ -16,7 +16,11 @@ export class Message extends React.Component {
         ) : (
           <Avatar />
         )}
-        <div className="message">
+        <div
+          className={
+            this.props.me === true ? "message" : "message message__mine"
+          }
+        >
           <span className="text">
             author: {this.props.message.author} - {this.props.message.text}
           </span>

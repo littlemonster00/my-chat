@@ -8,20 +8,27 @@ export class ChatInput extends React.Component {
   };
   handleTextChange = e => {
     const textInput = e.target.value;
-    if (textInput !== "\n")
+    if (textInput !== "\n") {
+      e.target.style.cssText = "height:" + e.target.scrollHeight + "px";
       this.setState(() => ({
         textInput
       }));
+    }
   };
   onEnterKePress = event => {
-    if (event.keyCode == 13 && !event.shiftKey) this.sendMessage();
+    if (event.keyCode == 13 && !event.shiftKey) {
+      this.sendMessage();
+      event.target.style.cssText = "height: 36px";
+    }
   };
+  onAutoGrow = e => {};
   sendMessage = e => {
     this.props.sendMessage({
       author: Math.floor(Math.random() * 2 + 1).toString(),
       text: this.state.textInput
     });
     this.setState(() => ({ textInput: "" }));
+    document.getElementById("input-msg").style.cssText = "height: 36px";
     this._input.focus();
   };
 
@@ -29,15 +36,15 @@ export class ChatInput extends React.Component {
     return (
       <div className="chat-input">
         <textarea
-          className="form-control"
+          className="form-control input-msg"
           rows="1"
-          id="comment"
+          id="input-msg"
           onChange={this.handleTextChange}
           value={this.state.textInput}
           autoFocus
           ref={c => (this._input = c)}
           onKeyDown={this.onEnterKePress}
-          // onKeyUp={this.autoGrow}
+          onInput={this.onAutoGrow}
         ></textarea>
         {this.state.textInput && (
           <button
