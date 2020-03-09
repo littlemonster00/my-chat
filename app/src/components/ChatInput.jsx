@@ -12,9 +12,20 @@ export class ChatInput extends React.Component {
       textInput
     }));
   };
+  onEnterKePress = event => {
+    if (event.keyCode == 13 && !event.shiftKey) {
+      this.sendMessage();
+    }
+  };
+  /*   autoGrow = oField => {
+    console.log(oField);
+    if (oField.scrollHeight > oField.clientHeight) {
+      oField.style.height = oField.scrollHeight + "px";
+    }
+  }; */
   sendMessage = e => {
     this.props.sendMessage({
-      author: "1",
+      author: Math.floor(Math.random() * 2 + 1).toString(),
       text: this.state.textInput
     });
     this.setState(() => ({ textInput: "" }));
@@ -26,16 +37,23 @@ export class ChatInput extends React.Component {
       <div className="chat-input">
         <textarea
           className="form-control"
-          rows="3"
+          rows="1"
           id="comment"
           onChange={this.handleTextChange}
           value={this.state.textInput}
           autoFocus
           ref={c => (this._input = c)}
+          onKeyDown={this.onEnterKePress}
+          // onKeyUp={this.autoGrow}
         ></textarea>
-        <button className="btn btn-success" onClick={this.sendMessage}>
-          Send
-        </button>
+        {this.state.textInput && (
+          <button
+            className="btn btn-success btn-send-msg"
+            onClick={this.sendMessage}
+          >
+            Send
+          </button>
+        )}
       </div>
     );
   }

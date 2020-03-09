@@ -30,7 +30,8 @@ export default [
   {
     id: "5",
     author: "2",
-    text: "This is 5",
+    text:
+      "This is what are you doing is what are you doing is what are you doing is what are you doing is what are you doing is what are you doing is what are you doing is what are you doing ",
     createAt: 0,
     lastSeen: 0
   }

@@ -1,5 +1,8 @@
 .chat-input {
   display: flex;
   background-color: skyblue;
-  height: 15%;
+  padding: 1rem;
+}
+.noscrollbars {
+  overflow: hidden;
 }
