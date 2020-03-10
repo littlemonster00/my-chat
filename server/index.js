@@ -3,8 +3,8 @@ const { ApolloServer } = require("apollo-server-express");
 const bodyParser = require("body-parser");
 
 const jwtAuth = require("./src/authentication/jwtAuth");
-const resolvers = require("./src/resolvers");
-const typeDefs = require("./src/typeDefs");
+const resolvers = require("./src/resolvers/resolvers");
+const typeDefs = require("./src/typeDefs/typeDefs");
 const port = process.env.PORT || 4000;
 
 require("./src/config/mongo-db");
