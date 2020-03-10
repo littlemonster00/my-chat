@@ -4,15 +4,18 @@ import "../styles/components/Header.scss";
 import gql from "graphql-tag";
 import { Query } from "react-apollo";
 
-const announcement = gql`
+const loadUserInfo = gql`
   {
-    announcement
+    user(id: "5e6718b00c3e8966f7e9360a") {
+      display_name
+      title
+    }
   }
 `;
 export class Header extends React.Component {
   render() {
     return (
-      <Query query={announcement}>
+      <Query query={loadUserInfo}>
         {({ loading, error, data }) => {
           if (loading) return null;
           if (error) return `Error!: ${error}`;
@@ -22,8 +25,8 @@ export class Header extends React.Component {
                 <Avatar visible={true} />
               </div>
               <div className="header__info">
-                <h5>Sang Le</h5>
-                <p>{data.announcement}</p>
+                <h5>{data.user.display_name}</h5>
+                <p>{data.user.title}</p>
               </div>
             </div>
           );
