@@ -1,5 +1,5 @@
 const express = require("express");
-const { ApolloServer, gql } = require("apollo-server-express");
+const { ApolloServer } = require("apollo-server-express");
 const bodyParser = require("body-parser");
 
 const jwtAuth = require("./src/authentication/jwtAuth");
@@ -7,6 +7,7 @@ const resolvers = require("./src/resolvers");
 const typeDefs = require("./src/typeDefs");
 const port = process.env.PORT || 4000;
 
+require("./src/config/mongo-db");
 const app = express();
 const path = "/graphql";
 
