@@ -8,6 +8,7 @@ const typeDefs = gql`
     title: String
   }
   type Message {
+    id: String
     text: String
     author: String!
     createdAt: String

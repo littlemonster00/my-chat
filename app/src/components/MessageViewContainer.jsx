@@ -2,12 +2,25 @@ import React from "react";
 import { connect } from "react-redux";
 import { Message } from "./Message.jsx";
 import "../styles/components/MessageViewContainer.scss";
+import gql from "graphql-tag";
+import { pullMessages } from ".../../../src/actions/messages";
+
+const LOAD_MESSAGES = gql`
+  {
+    loadMessages {
+      id
+      author
+      text
+      createdAt
+    }
+  }
+`;
 
 export class MessageViewContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      userId: "1",
+      userId: "5e6718b00c3e8966f7e9360a",
       count: 10
     };
   }
@@ -67,7 +80,11 @@ export class MessageViewContainer extends React.Component {
   render() {
     return (
       <div className="message-view-container" id="message-views">
-        {this.renderMessages()}
+        {this.props.messages.length === 0 ? (
+          <p>To start conversation. Let type something.</p>
+        ) : (
+          this.renderMessages()
+        )}
       </div>
     );
   }
@@ -80,4 +97,12 @@ const mapStateToProps = state => {
     messages: state.messages
   };
 };
-export default connect(mapStateToProps)(MessageViewContainer);
+const mapDispatchToProps = dispatch => {
+  return {
+    pullMessages: messages => dispatch(pullMessages(messages))
+  };
+};
+export default connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(MessageViewContainer);

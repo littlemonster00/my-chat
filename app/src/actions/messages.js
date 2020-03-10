@@ -11,3 +11,10 @@ export const addMessage = message => {
     }
   };
 };
+
+export const pullMessages = messages => {
+  return {
+    type: "PULL_MESSAGES",
+    messages
+  };
+};
