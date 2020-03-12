@@ -2,15 +2,38 @@ const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const { User, Message } = require("../mongoose/schema");
 
-const author = "5e6718b00c3e8966f7e9360a";
 const resolvers = {
+  User: {
+    messages: async (parent, { skip = 0, limit = 0 }) => {
+      limit = Math.min(20, limit);
+      const messages = await Message.find({ author: parent._id })
+        .skip(skip)
+        .limit(limit);
+      return messages;
+    }
+  },
+  Message: {
+    author: async parent => {
+      const user = await User.findById(parent.author);
+      return user;
+    }
+  },
   Query: {
     user: async (parent, { id }) => {
       const user = await User.findById(id);
       return user;
     },
-    loadMessages: async () => {
-      const messages = await Message.find({ author });
+    loadMessages: async (
+      parent,
+      { author, skip = 0, limit = 0 },
+      context,
+      info
+    ) => {
+      // Max limit equal 20 messages
+      limit = Math.min(20, limit);
+      const messages = await Message.find({ author })
+        .skip(skip)
+        .limit(limit);
       return messages;
     },
     announcement: () =>

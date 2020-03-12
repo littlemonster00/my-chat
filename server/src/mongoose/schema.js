@@ -5,7 +5,8 @@ const userSchema = new Schema({
   username: String,
   password: String,
   display_name: String,
-  title: String
+  title: String,
+  avatar: String
 });
 const messageSchema = new Schema({
   text: String,
