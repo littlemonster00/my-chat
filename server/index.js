@@ -11,7 +11,17 @@ require("./src/config/mongo-db");
 const app = express();
 const path = "/graphql";
 
-const server = new ApolloServer({ typeDefs, resolvers });
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
+  context: requestGraphql => {
+    return {
+      user: {
+        id: requestGraphql.req.headers.user_id
+      }
+    };
+  }
+});
 
 //Mount a jwt or other authentication middleware that is run before the GraphQL execution
 app.use(path, bodyParser.json(), jwtAuth);

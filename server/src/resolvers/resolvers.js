@@ -1,10 +1,10 @@
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
-const { User, Message } = require("../mongoose/schema");
+const { User, Message, Channel } = require("../mongoose/schema");
 
 const resolvers = {
   User: {
-    messages: async (parent, { skip = 0, limit = 0 }) => {
+    messages: async (parent, { skip = 0, limit = 20 }) => {
       limit = Math.min(20, limit);
       const messages = await Message.find({ author: parent._id })
         .skip(skip)
@@ -19,13 +19,20 @@ const resolvers = {
     }
   },
   Query: {
+    channel: async (parent, { id }) => {
+      const channel = await Channel.findById(id).populate(
+        "messages participant"
+      );
+
+      return channel;
+    },
     user: async (parent, { id }) => {
       const user = await User.findById(id);
       return user;
     },
     loadMessages: async (
       parent,
-      { author, skip = 0, limit = 0 },
+      { author, skip = 0, limit = 20 },
       context,
       info
     ) => {
@@ -48,15 +55,19 @@ const resolvers = {
       }
       return null;
     },
-    addMessage: async (parent, { text }) => {
-      const message = new Message({
-        text,
-        author,
-        createdAt: moment(),
-        lastSeen: undefined
-      });
-      await message.save();
-      return message;
+    sendMessage: async (parent, { text, channel }, context, info) => {
+      try {
+        const message = await Channel.sendMessage({
+          channel,
+          text,
+          author: context.user.id,
+          createdAt: moment(),
+          lastSeen: undefined
+        });
+        return message;
+      } catch (error) {
+        return error;
+      }
     }
   }
 };
