@@ -2,6 +2,27 @@ import React from "react";
 import { connect } from "react-redux";
 import { addMessage } from "../actions/messages";
 import "../styles/components/ChatInput.scss";
+import gql from "graphql-tag";
+import { Mutation } from "@apollo/react-components";
+import { ApolloConsumer } from "react-apollo";
+
+const ADD_MESSAGE = gql`
+  mutation addMessage($type: String) {
+    addMessage(text: $type) {
+      id
+      text
+      author
+    }
+  }
+`;
+const WithApolloClient = () => (
+  <ApolloConsumer>
+    {client => {
+      console.log(client);
+    }}
+  </ApolloConsumer>
+);
+
 export class ChatInput extends React.Component {
   state = {
     textInput: ""

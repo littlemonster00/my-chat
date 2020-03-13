@@ -8,9 +8,11 @@ export class Avatar extends React.Component {
   render() {
     return (
       <div className="avatar-container">
-        {this.props.visible === true && (
-          <img className="avatar" src={avatar} alt="avatar" />
-        )}
+        <img
+          className="avatar"
+          src={this.props.urlAvatar || avatar}
+          alt="avatar"
+        />
       </div>
     );
   }

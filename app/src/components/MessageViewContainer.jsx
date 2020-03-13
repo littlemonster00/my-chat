@@ -4,23 +4,32 @@ import { Message } from "./Message.jsx";
 import "../styles/components/MessageViewContainer.scss";
 import gql from "graphql-tag";
 import { pullMessages } from ".../../../src/actions/messages";
+import { Query } from "react-apollo";
 
-const LOAD_MESSAGES = gql`
-  {
-    loadMessages {
+const GET_MESSAGES_CHANNEL = gql`
+  query channel($id: String!) {
+    channel(id: $id) {
       id
-      author
-      text
-      createdAt
+      participant {
+        id
+        username
+      }
+      messages {
+        id
+        text
+        author {
+          avatar
+        }
+      }
     }
   }
 `;
-
 export class MessageViewContainer extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       userId: "5e6718b00c3e8966f7e9360a",
+      channel: "5e69ee740a8fa26172d44715",
       count: 10
     };
   }
@@ -31,66 +40,27 @@ export class MessageViewContainer extends React.Component {
   componentDidUpdate = () => {
     this.updateScroll();
   };
-  renderMessages() {
-    const messagesRender = [];
-    const messages = this.props.messages;
-    if (messages.length === 1) {
-      messagesRender.push(
-        <Message
-          lastMessage={true}
-          key={messages[0].id}
-          message={messages[0]}
-          me={messages[0].author === this.state.userId ? true : false}
-        />
-      );
-    } else {
-      for (let i = 0; i < messages.length - 1; i++) {
-        if (messages[i].author !== messages[i + 1].author) {
-          messagesRender.push(
-            <Message
-              lastMessage={true}
-              key={messages[i].id}
-              message={messages[i]}
-              me={messages[i].author === this.state.userId ? true : false}
-            />
-          );
-        } else {
-          messagesRender.push(
-            <Message
-              key={messages[i].id}
-              message={messages[i]}
-              me={messages[i].author === this.state.userId ? true : false}
-            />
-          );
-        }
-        if (i + 2 === messages.length) {
-          messagesRender.push(
-            <Message
-              lastMessage={true}
-              key={messages[i + 1].id}
-              message={messages[i + 1]}
-              me={messages[i + 1].author === this.state.userId ? true : false}
-            />
-          );
-        }
-      }
-    }
-    return messagesRender;
-  }
+
   render() {
     return (
       <div className="message-view-container" id="message-views">
-        {this.props.messages.length === 0 ? (
-          <p>To start conversation. Let type something.</p>
-        ) : (
-          this.renderMessages()
-        )}
+        <Query
+          query={GET_MESSAGES_CHANNEL}
+          variables={{ id: this.state.channel }}
+        >
+          {({ loading, error, data }) => {
+            if (loading) return null;
+            if (error) return `Error! ${error}`;
+            console.log(data.channel);
+            return data.channel.messages.map((message, index) => (
+              <Message {...message} key={message.id} />
+            ));
+          }}
+        </Query>
       </div>
     );
   }
-  componentDidMount() {
-    console.log("component did mount");
-  }
+  componentDidMount() {}
 }
 const mapStateToProps = state => {
   return {

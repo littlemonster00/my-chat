@@ -34,7 +34,7 @@ const MyChat = props => {
 const client = new ApolloClient({
   uri: "http://localhost:4000/graphql"
 });
-client
+/* client
   .query({
     query: gql`
       {
@@ -50,7 +50,7 @@ client
   .then(response => {
     const messages = response.data.loadMessages;
     store.dispatch(pullMessages(messages));
-  });
+  }); */
 const App = () => (
   <ApolloProvider client={client}>
     <Provider store={store}>
