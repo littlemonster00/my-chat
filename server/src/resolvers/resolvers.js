@@ -19,12 +19,15 @@ const resolvers = {
     }
   },
   Query: {
-    channel: async (parent, { id }) => {
+    channel: async (parent, { id }, context) => {
+      const { userId } = jwt.verify(context.token, process.env.MY_SECRET);
       const channel = await Channel.findById(id).populate(
         "messages participant"
       );
-
-      return channel;
+      if (channel.messages.indexOf(userId)) {
+        return channel;
+      }
+      return [];
     },
     user: async (parent, { id }) => {
       const user = await User.findById(id);
@@ -47,10 +50,14 @@ const resolvers = {
       `Say hello to the new Apollo Server! A production ready GraphQL server with an incredible getting started experience.`
   },
   Mutation: {
-    login: async (parent, { username, password }) => {
+    login: async (parent, { username, password }, context) => {
       const user = await User.findOne({ username }, "password");
       if (user.password === password) {
-        const token = jwt.sign({ id: user._id, username }, "123abc");
+        const token = jwt.sign(
+          { userId: user._id, username },
+          process.env.MY_SECRET
+        );
+        // context.pubsub.publish("hello", { hello: "subscription working as " });
         return token;
       }
       return null;
@@ -60,13 +67,28 @@ const resolvers = {
         const message = await Channel.sendMessage({
           channel,
           text,
-          author: context.user.id,
+          // author: context.user.id,
+          author: "5e6718b00c3e8966f7e9360a",
           createdAt: moment(),
           lastSeen: undefined
         });
+        // Pubsub message to the channel.
+        context.pubsub.publish("NEW_MESSAGE", { newMessageOnChannel: message });
         return message;
       } catch (error) {
         return error;
+      }
+    }
+  },
+  Subscription: {
+    hello: {
+      subscribe: (parent, args, context) => {
+        return context.pubsub.asyncIterator(["hello"]);
+      }
+    },
+    newMessageOnChannel: {
+      subscribe: (parent, args, context) => {
+        return context.pubsub.asyncIterator(["NEW_MESSAGE"]);
       }
     }
   }

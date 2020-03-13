@@ -17,6 +17,7 @@ const typeDefs = gql`
     lastSeen: String
   }
   type Channel {
+    id: String
     participant: [User!]
     messages: [Message]
   }
@@ -29,6 +30,10 @@ const typeDefs = gql`
   type Mutation {
     login(username: String, password: String): String
     sendMessage(text: String, channel: String!): Message
+  }
+  type Subscription {
+    hello: String
+    newMessageOnChannel(channelId: String!): Message!
   }
 `;
 
