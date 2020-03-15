@@ -1,5 +1,6 @@
 require("dotenv").config();
 const express = require("express");
+const cors = require("cors");
 const { ApolloServer } = require("apollo-server-express");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
 const bodyParser = require("body-parser");
@@ -29,15 +30,16 @@ const server = new ApolloServer({
         pubsub
       };
     } else {
-      const token = req.headers.token || "";
+      const authorization = req.headers.authorization || "";
       return {
-        token,
+        authorization,
         pubsub
       };
     }
   }
 });
 
+app.use(cors("*"));
 //Mount a jwt or other authentication middleware that is run before the GraphQL execution
 app.use(path, bodyParser.json());
 // app.use(path, bodyParser.json(), jwtAuth);

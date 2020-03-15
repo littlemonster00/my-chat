@@ -2,7 +2,9 @@ import React from "react";
 import { Avatar } from "./Avatar.jsx";
 import "../styles/components/Header.scss";
 import gql from "graphql-tag";
-import { Query } from "react-apollo";
+
+// import { Query } from "react-apollo";
+import { Query } from "@apollo/react-components";
 
 const loadUserInfo = gql`
   {
@@ -13,6 +15,7 @@ const loadUserInfo = gql`
     }
   }
 `;
+
 export class Header extends React.Component {
   render() {
     return (

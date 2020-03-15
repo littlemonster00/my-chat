@@ -15,13 +15,13 @@ const ADD_MESSAGE = gql`
     }
   }
 `;
-const WithApolloClient = () => (
-  <ApolloConsumer>
-    {client => {
-      console.log(client);
-    }}
-  </ApolloConsumer>
-);
+const SEND_MESSAGE = gql`
+  mutation sendMessage($text: String, $channel: String!) {
+    sendMessage(text: $text, channel: $channel) {
+      text
+    }
+  }
+`;
 
 export class ChatInput extends React.Component {
   state = {
@@ -55,28 +55,39 @@ export class ChatInput extends React.Component {
 
   render() {
     return (
-      <div className="chat-input">
-        <textarea
-          className="form-control input-msg"
-          rows="1"
-          id="input-msg"
-          onChange={this.handleTextChange}
-          value={this.state.textInput}
-          autoFocus
-          ref={c => (this._input = c)}
-          onKeyDown={this.onEnterKePress}
-          onInput={this.onAutoGrow}
-        ></textarea>
-        {this.state.textInput && (
-          <button
-            type="submit"
-            className="btn btn-success btn-send-msg"
-            onClick={this.sendMessage}
-          >
-            Send
-          </button>
+      <Mutation mutation={SEND_MESSAGE}>
+        {(sendMessage, { data }) => (
+          <div className="chat-input">
+            <textarea
+              className="form-control input-msg"
+              rows="1"
+              id="input-msg"
+              onChange={this.handleTextChange}
+              value={this.state.textInput}
+              autoFocus
+              ref={c => (this._input = c)}
+              onKeyDown={this.onEnterKePress}
+              onInput={this.onAutoGrow}
+            ></textarea>
+            {this.state.textInput && (
+              <button
+                type="submit"
+                className="btn btn-success btn-send-msg"
+                onClick={e => {
+                  sendMessage({
+                    variables: {
+                      text: "Hello sang le",
+                      channel: "5e69ee740a8fa26172d44715"
+                    }
+                  });
+                }}
+              >
+                Send
+              </button>
+            )}
+          </div>
         )}
-      </div>
+      </Mutation>
     );
   }
 }

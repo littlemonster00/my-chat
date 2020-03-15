@@ -20,7 +20,10 @@ const resolvers = {
   },
   Query: {
     channel: async (parent, { id }, context) => {
-      const { userId } = jwt.verify(context.token, process.env.MY_SECRET);
+      const { userId } = jwt.verify(
+        context.authorization,
+        process.env.MY_SECRET
+      );
       const channel = await Channel.findById(id).populate(
         "messages participant"
       );
