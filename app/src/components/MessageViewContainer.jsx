@@ -1,10 +1,17 @@
 import React from "react";
-import { connect } from "react-redux";
 import { Message } from "./Message.jsx";
 import "../styles/components/MessageViewContainer.scss";
-import gql from "graphql-tag";
 import { graphql } from "react-apollo";
-import { ApolloConsumer, Query } from "@apollo/react-components";
+import { ApolloConsumer } from "@apollo/react-components";
+
+import { Query } from "@apollo/react-components";
+import { gql } from "@apollo/client";
+
+const GET_USER_INFO = gql`
+  {
+    userInfo @client
+  }
+`;
 
 import { pullMessages } from ".../../../src/actions/messages";
 
@@ -102,20 +109,35 @@ export class MessageViewContainer extends React.Component {
   //   });
 
   render() {
-    const { data = { loading }, id } = this.props;
-    if (data.loading) return <h4>Loading...</h4>;
-    console.log(data);
-    const messages = data;
-    // return (
-    //   <div className="message-view-container" id="message-views">
-    //     {messages.map((message, index) => {
-    //       return <Message key={message.id} {...message} />;
-    //     })}
-    //   </div>
-    // );
-    return <p>hisdf</p>;
-  }
+    const {
+      data: { loading, channel: { messages, participant } = {}, error },
+      id
+    } = this.props;
+    if (loading) return <h4>Loading...</h4>;
+    if (error) console.log(error);
+    return (
+      <ApolloConsumer>
+        {client => {
+          client.writeQuery({
+            query: gql`
+              {
+                channel
+              }
+            `,
+            data: { channel: { messages, participant } }
+          });
 
+          return (
+            <div className="message-view-container" id="message-views">
+              {messages.map((message, index) => {
+                return <Message key={message.id} {...message} />;
+              })}
+            </div>
+          );
+        }}
+      </ApolloConsumer>
+    );
+  }
   componentDidMount() {}
 }
 

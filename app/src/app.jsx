@@ -6,7 +6,7 @@ import { ApolloProvider } from "react-apollo";
 import client from "./apollo";
 
 // Import components
-import { Header } from "./components/Header.jsx";
+import Header from "./components/Header.jsx";
 import MessageViewContainer from "./components/MessageViewContainer.jsx";
 import ChatInput from "./components/ChatInput.jsx";
 import { SideBar } from "./components/SideBar.jsx";
