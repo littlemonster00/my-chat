@@ -1,0 +1,9 @@
+{
+  "name": "my-chat",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {},
+  "repository": "git@github.com:littlemonster00/my-chat.git",
+  "author": "littlemonster00 <sang.lequang94@gmail.com>",
+  "license": "MIT"
+}

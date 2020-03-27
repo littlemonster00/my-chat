@@ -19,7 +19,23 @@ const resolvers = {
     }
   },
   Query: {
-    channel: async (parent, { id }, context) => {
+    messagesOnChannel: async (
+      parent,
+      { channelId, offset, limit },
+      context,
+      info
+    ) => {
+      // Max limit equal 20 messages
+      limit = Math.min(20, limit);
+      let count = await Message.find({ channel: channelId }).count();
+      const messages = await Message.find({ channel: channelId })
+        .skip(count - limit)
+        .limit(limit);
+
+      return messages;
+    },
+    channel: async (parent, { id }, context, info) => {
+      console.log(info.messages);
       const { userId } = jwt.verify(
         context.authorization,
         process.env.MY_SECRET
@@ -36,19 +52,7 @@ const resolvers = {
       const user = await User.findById(id);
       return user;
     },
-    loadMessages: async (
-      parent,
-      { author, skip = 0, limit = 20 },
-      context,
-      info
-    ) => {
-      // Max limit equal 20 messages
-      limit = Math.min(20, limit);
-      const messages = await Message.find({ author })
-        .skip(skip)
-        .limit(limit);
-      return messages;
-    },
+
     announcement: () =>
       `Say hello to the new Apollo Server! A production ready GraphQL server with an incredible getting started experience.`
   },

@@ -1,19 +1,15 @@
 import React from "react";
 import { Message } from "./Message.jsx";
+import { Messages } from "./Messages.jsx";
+
 import "../styles/components/MessageViewContainer.scss";
 import { graphql } from "react-apollo";
 import { ApolloConsumer } from "@apollo/react-components";
 
-import { Query } from "@apollo/react-components";
+import { Query, Subscription } from "@apollo/react-components";
 import { gql } from "@apollo/client";
 
-const GET_USER_INFO = gql`
-  {
-    userInfo @client
-  }
-`;
-
-import { pullMessages } from ".../../../src/actions/messages";
+// import { pullMessages } from ".../../../src/actions/messages";
 
 const GET_MESSAGES_CHANNEL = gql`
   query channel($id: String!) {
@@ -27,6 +23,8 @@ const GET_MESSAGES_CHANNEL = gql`
         id
         text
         author {
+          id
+          username
           avatar
         }
       }
@@ -34,6 +32,19 @@ const GET_MESSAGES_CHANNEL = gql`
   }
 `;
 
+const LOAD_MESSAGES_ON_CHANNEL = gql`
+  query messagesOnChannel($channelId: String!, $offset: Int, $limit: Int) {
+    messagesOnChannel(channelId: $channelId, offset: $offset, limit: $limit) {
+      id
+      text
+      author {
+        id
+        username
+        avatar
+      }
+    }
+  }
+`;
 const newMessageOnChannel = gql`
   subscription($channelId: String!) {
     newMessageOnChannel(channelId: $channelId) {
@@ -85,57 +96,38 @@ export class MessageViewContainer extends React.Component {
   // }
 
   componentDidUpdate = () => {
-    // this.updateScroll();
+    this.updateScroll();
   };
-
-  // Sbuscribe for load new message in this channel
-  // subscribe = channelId =>
-  //   this.props.data.subscribeToMore({
-  //     document: newMessageOnChannel,
-  //     variables: {
-  //       channelId: "5e69ee740a8fa26172d44715"
-  //     },
-  //     updateQuery: (prev, { subscriptionData }) => {
-  //       console.log(subscriptionData);
-  //       // if (!subscriptionData) {
-  //       //   return prev;
-  //       // }
-
-  //       // return {
-  //       //   ...prev,
-  //       //   messages: [subscriptionData.newChannelMessage, ...prev.messages]
-  //       // };
-  //     }
-  //   });
 
   render() {
     const {
-      data: { loading, channel: { messages, participant } = {}, error },
+      data,
+      data: { loading, subscribeToMore, error, messagesOnChannel },
       id
     } = this.props;
     if (loading) return <h4>Loading...</h4>;
     if (error) console.log(error);
+    console.log(data);
     return (
-      <ApolloConsumer>
-        {client => {
-          client.writeQuery({
-            query: gql`
-              {
-                channel
+      <div className="message-view-container" id="message-views">
+        <Messages
+          messages={messagesOnChannel}
+          subscribeToNewMessages={() =>
+            subscribeToMore({
+              document: newMessageOnChannel,
+              variables: { channelId: "5e69ee740a8fa26172d44715" },
+              updateQuery: (prev, { subscriptionData }) => {
+                if (!subscriptionData.data) return { ...prev };
+                const newFeedItem = subscriptionData.data.newMessageOnChannel;
+                // prev.messagesOnChannel.shift();
+                return Object.assign({}, prev, {
+                  messagesOnChannel: [...prev.messagesOnChannel, newFeedItem]
+                });
               }
-            `,
-            data: { channel: { messages, participant } }
-          });
-
-          return (
-            <div className="message-view-container" id="message-views">
-              {messages.map((message, index) => {
-                return <Message key={message.id} {...message} />;
-              })}
-            </div>
-          );
-        }}
-      </ApolloConsumer>
+            })
+          }
+        />
+      </div>
     );
   }
   componentDidMount() {}
@@ -147,17 +139,19 @@ const mapStateToProps = state => {
   };
 };
 
-const mapDispatchToProps = dispatch => {
-  return {
-    pullMessages: messages => dispatch(pullMessages(messages))
-  };
-};
+// const mapDispatchToProps = dispatch => {
+//   return {
+//     pullMessages: messages => dispatch(pullMessages(messages))
+//   };
+// };
 
-export default graphql(GET_MESSAGES_CHANNEL, {
+export default graphql(LOAD_MESSAGES_ON_CHANNEL, {
   options: props => ({
     fetchPolicy: "network-only",
     variables: {
-      id: "5e69ee740a8fa26172d44715"
+      channelId: "5e69ee740a8fa26172d44715",
+      offset: 0,
+      limit: 20
     }
   })
 })(MessageViewContainer);

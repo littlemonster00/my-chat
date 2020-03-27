@@ -19,13 +19,13 @@ const typeDefs = gql`
   type Channel {
     id: String
     participant: [User!]
-    messages: [Message]
+    messages(offset: Int, limit: Int): [Message]
   }
   type Query {
     channel(id: String!): Channel
     announcement: String
     user(id: String!): User
-    loadMessages(author: String!, skip: Int, limit: Int): [Message]
+    messagesOnChannel(channelId: String!, offset: Int, limit: Int): [Message]
   }
   type Mutation {
     login(username: String, password: String): String

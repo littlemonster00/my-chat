@@ -1,5 +1,5 @@
 import messages from "../components/playground/messages";
-const messagesDefaultState = [...messages];
+const messagesDefaultState = [];
 
 export default (state = messagesDefaultState, action) => {
   switch (action.type) {
