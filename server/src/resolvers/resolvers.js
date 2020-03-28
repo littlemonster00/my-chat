@@ -84,7 +84,7 @@ const resolvers = {
           channel,
           text,
           // author: context.user.id,
-          author: "5e6718b00c3e8966f7e9360a",
+          author: context.userId,
           createdAt: moment(),
           lastSeen: undefined
         });
