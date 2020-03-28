@@ -28,12 +28,16 @@ const typeDefs = gql`
     messagesOnChannel(channelId: String!, offset: Int, limit: Int): [Message]
   }
   type Mutation {
-    login(username: String, password: String): String
+    login(username: String, password: String): Login
     sendMessage(text: String, channel: String!): Message
   }
   type Subscription {
     hello: String
     newMessageOnChannel(channelId: String!): Message!
+  }
+  type Login {
+    error: String
+    token: String
   }
 `;
 

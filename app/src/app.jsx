@@ -6,6 +6,7 @@ import { ApolloProvider } from "react-apollo";
 import client from "./apollo";
 
 // Import components
+import LoginPage from "./components/LoginPage.jsx";
 import Header from "./components/Header.jsx";
 import MessageViewContainer from "./components/MessageViewContainer.jsx";
 import ChatInput from "./components/ChatInput.jsx";
@@ -19,16 +20,14 @@ import { pullMessages } from "../src/actions/messages";
 
 const store = configStore();
 const MyChat = props => {
-  return (
-    <div className="workspace">
-      {/* <SideBar /> */}
+  return <LoginPage />;
+  /* <div className="workspace">
       <div className="container">
         <Header />
         <MessageViewContainer />
         <ChatInput />
       </div>
-    </div>
-  );
+    </div> */
 };
 
 const App = () => (

@@ -59,15 +59,24 @@ const resolvers = {
   Mutation: {
     login: async (parent, { username, password }, context) => {
       const user = await User.findOne({ username }, "password");
-      if (user.password === password) {
-        const token = jwt.sign(
-          { userId: user._id, username },
-          process.env.MY_SECRET
-        );
-        // context.pubsub.publish("hello", { hello: "subscription working as " });
-        return token;
+      if (user) {
+        if (user.password === password) {
+          const token = jwt.sign(
+            { userId: user._id, username },
+            process.env.MY_SECRET
+          );
+          // context.pubsub.publish("hello", { hello: "subscription working as " });
+          return {
+            token,
+            error: ""
+          };
+        }
+      } else {
+        return {
+          error: "Not Authenticated",
+          token: ""
+        };
       }
-      return null;
     },
     sendMessage: async (parent, { text, channel }, context, info) => {
       try {
