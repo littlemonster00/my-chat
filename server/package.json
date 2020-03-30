@@ -16,7 +16,8 @@
     "jsonwebtoken": "^8.5.1",
     "moment": "^2.24.0",
     "mongoose": "^5.9.4",
-    "subscriptions-transport-ws": "^0.9.16"
+    "subscriptions-transport-ws": "^0.9.16",
+    "uuid": "^7.0.2"
   },
   "devDependencies": {
     "nodemon": "^2.0.2"

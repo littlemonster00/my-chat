@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const { User, Message, Channel } = require("../mongoose/schema");
-
+const { notAuthenticated } = require("./respones");
 const resolvers = {
   User: {
     messages: async (parent, { skip = 0, limit = 20 }) => {
@@ -19,6 +19,14 @@ const resolvers = {
     }
   },
   Query: {
+    channels: async (parent, { parId, offset, limit }, context, info) => {
+      const channels = await Channel.find({
+        participant: {
+          $in: [parId]
+        }
+      }).populate("participant");
+      return channels;
+    },
     messagesOnChannel: async (
       parent,
       { channelId, offset, limit },
@@ -56,25 +64,49 @@ const resolvers = {
       `Say hello to the new Apollo Server! A production ready GraphQL server with an incredible getting started experience.`
   },
   Mutation: {
-    login: async (parent, { username, password }, context) => {
-      const user = await User.findOne({ username }, "password");
+    signup: async (parent, { email, password }, context) => {
+      let user = await User.findOne({ email });
       if (user) {
-        if (user.password === password) {
-          const token = jwt.sign(
-            { userId: user._id, username },
-            process.env.MY_SECRET
-          );
-          // context.pubsub.publish("hello", { hello: "subscription working as " });
+        return {
+          error: "Email is taken",
+          messages: "Please take an other email."
+        };
+      } else {
+        user = await new User({ email, password }).save();
+        return {
+          error: "",
+          messages: "Success. You can login with your new account"
+        };
+      }
+    },
+    login: async (parent, { email, password }, context) => {
+      try {
+        const user = await User.findOne({ email }, "password");
+        if (user) {
+          if (user.password === password) {
+            const token = jwt.sign(
+              { userId: user._id, username: user.username },
+              process.env.MY_SECRET
+            );
+            return {
+              token,
+              error: ""
+            };
+          } else {
+            const response = {
+              error: "Not authenticated.",
+              token: ""
+            };
+            return notAuthenticated(response);
+          }
+        } else {
           return {
-            token,
-            error: ""
+            error: "Email is not existed",
+            token: ""
           };
         }
-      } else {
-        return {
-          error: "Not Authenticated",
-          token: ""
-        };
+      } catch (error) {
+        return error;
       }
     },
     sendMessage: async (parent, { text, channel }, context, info) => {

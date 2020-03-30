@@ -8,6 +8,7 @@ const typeDefs = gql`
     title: String
     avatar: String
     messages(skip: Int, limit: Int): [Message]
+    email: String
   }
   type Message {
     id: String
@@ -26,14 +27,20 @@ const typeDefs = gql`
     announcement: String
     user(id: String!): User
     messagesOnChannel(channelId: String!, offset: Int, limit: Int): [Message]
+    channels(parId: String!, offset: Int, limit: Int): [Channel]
   }
   type Mutation {
-    login(username: String, password: String): Login
+    login(email: String, password: String): Login
+    signup(email: String!, password: String!): SignUp
     sendMessage(text: String, channel: String!): Message
   }
   type Subscription {
     hello: String
     newMessageOnChannel(channelId: String!): Message!
+  }
+  type SignUp {
+    error: String
+    messages: String
   }
   type Login {
     error: String
