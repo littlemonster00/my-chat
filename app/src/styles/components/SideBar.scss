@@ -2,4 +2,9 @@
   background-color: seashell;
   width: 30%;
   display: flex;
+  flex-flow: column;
+  height: 100vh;
+}
+.side-bar__header {
+  display: inline-flex;
 }

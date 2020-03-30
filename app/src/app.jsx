@@ -21,7 +21,8 @@ import { pullMessages } from "../src/actions/messages";
 const store = configStore();
 const MyChat = props => (
   <div className="workspace">
-    {!localStorage.getItem("authorization") ? (
+    <SideBar />
+    {/* {!localStorage.getItem("authorization") ? (
       <LoginPage />
     ) : (
       <div className="container">
@@ -29,7 +30,7 @@ const MyChat = props => (
         <MessageViewContainer />
         <ChatInput />
       </div>
-    )}
+    )} */}
   </div>
 );
 

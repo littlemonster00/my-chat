@@ -61,7 +61,7 @@ export default graphql(GET_USER_INFO, {
   options: props => ({
     fetchPolicy: "network-only",
     variables: {
-      id: "5e6718b00c3e8966f7e9360a"
+      id: "5e816e9b7539d77289145900"
     }
   })
 })(Header);

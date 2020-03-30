@@ -3,8 +3,8 @@ import { gql } from "@apollo/client";
 import { Mutation } from "@apollo/react-components";
 
 const LOGIN = gql`
-  mutation login($username: String!, $password: String!) {
-    login(username: $username, password: $password) {
+  mutation login($email: String!, $password: String!) {
+    login(email: $email, password: $password) {
       error
       token
     }
@@ -15,7 +15,7 @@ export default class LoginPage extends Component {
   constructor() {
     super();
     this.state = {
-      username: "",
+      email: "",
       password: "",
       error: ""
     };
@@ -33,7 +33,7 @@ export default class LoginPage extends Component {
   handleSubmit(evt) {
     evt.preventDefault();
 
-    if (!this.state.username) {
+    if (!this.state.email) {
       return this.setState({ error: "Username is required" });
     }
 
@@ -44,7 +44,7 @@ export default class LoginPage extends Component {
 
   handleUserChange(evt) {
     this.setState({
-      username: evt.target.value
+      email: evt.target.value
     });
   }
 
@@ -70,7 +70,7 @@ export default class LoginPage extends Component {
                   console.log(this.state);
                   login({
                     variables: {
-                      username: this.state.username,
+                      email: this.state.email,
                       password: this.state.password
                     }
                   });
@@ -79,8 +79,8 @@ export default class LoginPage extends Component {
                 <label>User Name</label>
                 <input
                   type="text"
-                  name="username"
-                  value={this.state.username}
+                  name="email"
+                  value={this.state.email}
                   onChange={this.handleUserChange}
                 />
                 <label>Password</label>
