@@ -11,7 +11,11 @@ export class Channel extends React.Component {
     return (
       <div className="channel-container">
         <div className="channel_avatar">Avatar</div>
-        <div className="channel_content">Channel {this.props.id}</div>
+        <div className="channel_content">
+          <a href={this.props.participant.username}>
+            {this.props.participant.username}
+          </a>
+        </div>
         <div className="channel_info">Info</div>
       </div>
     );
