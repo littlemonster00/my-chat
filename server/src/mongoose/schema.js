@@ -1,9 +1,18 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
+const { v4 } = require("uuid");
 
 // User Schema
 const userSchema = new Schema({
-  username: String,
+  email: {
+    type: String,
+    unique: true
+  },
+  username: {
+    type: String,
+    unique: true,
+    default: v4()
+  },
   password: String,
   display_name: String,
   title: String,
@@ -64,11 +73,9 @@ const Message = mongoose.model("Message", messageSchema);
 const Channel = mongoose.model("Channel", channelSchema);
 
 // const channel = new Channel({
-//   participant: ["5e6718b00c3e8966f7e9360a", "5e69d64eabe1e90486427fea"],
+//   participant: ["5e816e9b7539d77289145900", "5e8171d54141ab777c3abee8"],
 //   messages: []
 // }).save();
-//   .then(channel => console.log(channel))
-//   .catch(error => console.log(error));
 
 // const message = new Message({
 //   text: "what's bor. i am here...2",

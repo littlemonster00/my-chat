@@ -1,7 +1,7 @@
 const jwt = require("jsonwebtoken");
 const moment = require("moment");
 const { User, Message, Channel } = require("../mongoose/schema");
-
+const { notAuthenticated } = require("./respones");
 const resolvers = {
   User: {
     messages: async (parent, { skip = 0, limit = 20 }) => {
@@ -19,7 +19,30 @@ const resolvers = {
     }
   },
   Query: {
-    channel: async (parent, { id }, context) => {
+    channels: async (parent, { parId, offset, limit }, context, info) => {
+      const channels = await Channel.find({
+        participant: {
+          $in: [parId]
+        }
+      }).populate("participant");
+      return channels;
+    },
+    messagesOnChannel: async (
+      parent,
+      { channelId, offset, limit },
+      context,
+      info
+    ) => {
+      // Max limit equal 20 messages
+      limit = Math.min(20, limit);
+      let count = await Message.find({ channel: channelId }).count();
+      const messages = await Message.find({ channel: channelId })
+        .skip(count - limit)
+        .limit(limit);
+
+      return messages;
+    },
+    channel: async (parent, { id }, context, info) => {
       const { userId } = jwt.verify(
         context.authorization,
         process.env.MY_SECRET
@@ -36,34 +59,55 @@ const resolvers = {
       const user = await User.findById(id);
       return user;
     },
-    loadMessages: async (
-      parent,
-      { author, skip = 0, limit = 20 },
-      context,
-      info
-    ) => {
-      // Max limit equal 20 messages
-      limit = Math.min(20, limit);
-      const messages = await Message.find({ author })
-        .skip(skip)
-        .limit(limit);
-      return messages;
-    },
+
     announcement: () =>
       `Say hello to the new Apollo Server! A production ready GraphQL server with an incredible getting started experience.`
   },
   Mutation: {
-    login: async (parent, { username, password }, context) => {
-      const user = await User.findOne({ username }, "password");
-      if (user.password === password) {
-        const token = jwt.sign(
-          { userId: user._id, username },
-          process.env.MY_SECRET
-        );
-        // context.pubsub.publish("hello", { hello: "subscription working as " });
-        return token;
+    signup: async (parent, { email, password }, context) => {
+      let user = await User.findOne({ email });
+      if (user) {
+        return {
+          error: "Email is taken",
+          messages: "Please take an other email."
+        };
+      } else {
+        user = await new User({ email, password }).save();
+        return {
+          error: "",
+          messages: "Success. You can login with your new account"
+        };
       }
-      return null;
+    },
+    login: async (parent, { email, password }, context) => {
+      try {
+        const user = await User.findOne({ email }, "password");
+        if (user) {
+          if (user.password === password) {
+            const token = jwt.sign(
+              { userId: user._id, username: user.username },
+              process.env.MY_SECRET
+            );
+            return {
+              token,
+              error: ""
+            };
+          } else {
+            const response = {
+              error: "Not authenticated.",
+              token: ""
+            };
+            return notAuthenticated(response);
+          }
+        } else {
+          return {
+            error: "Email is not existed",
+            token: ""
+          };
+        }
+      } catch (error) {
+        return error;
+      }
     },
     sendMessage: async (parent, { text, channel }, context, info) => {
       try {
@@ -71,7 +115,7 @@ const resolvers = {
           channel,
           text,
           // author: context.user.id,
-          author: "5e6718b00c3e8966f7e9360a",
+          author: context.userId,
           createdAt: moment(),
           lastSeen: undefined
         });

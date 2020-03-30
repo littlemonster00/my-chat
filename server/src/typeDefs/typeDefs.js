@@ -8,6 +8,7 @@ const typeDefs = gql`
     title: String
     avatar: String
     messages(skip: Int, limit: Int): [Message]
+    email: String
   }
   type Message {
     id: String
@@ -19,21 +20,31 @@ const typeDefs = gql`
   type Channel {
     id: String
     participant: [User!]
-    messages: [Message]
+    messages(offset: Int, limit: Int): [Message]
   }
   type Query {
     channel(id: String!): Channel
     announcement: String
     user(id: String!): User
-    loadMessages(author: String!, skip: Int, limit: Int): [Message]
+    messagesOnChannel(channelId: String!, offset: Int, limit: Int): [Message]
+    channels(parId: String!, offset: Int, limit: Int): [Channel]
   }
   type Mutation {
-    login(username: String, password: String): String
+    login(email: String, password: String): Login
+    signup(email: String!, password: String!): SignUp
     sendMessage(text: String, channel: String!): Message
   }
   type Subscription {
     hello: String
     newMessageOnChannel(channelId: String!): Message!
+  }
+  type SignUp {
+    error: String
+    messages: String
+  }
+  type Login {
+    error: String
+    token: String
   }
 `;
 

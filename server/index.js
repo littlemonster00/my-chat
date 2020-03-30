@@ -1,6 +1,8 @@
 require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
+const jwt = require("jsonwebtoken");
+
 const { ApolloServer } = require("apollo-server-express");
 const { SubscriptionServer } = require("subscriptions-transport-ws");
 const bodyParser = require("body-parser");
@@ -23,18 +25,26 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   context: async ({ req, connection }) => {
-    if (connection) {
-      const context = connection.context;
+    try {
+      let tokenDecoded;
+      if (connection) {
+        tokenDecoded = jwt.verify(
+          connection.context.authorization,
+          process.env.MY_SECRET
+        );
+      } else {
+        tokenDecoded = jwt.verify(
+          req.headers.authorization,
+          process.env.MY_SECRET
+        );
+      }
       return {
-        ...context,
-        pubsub
+        pubsub,
+        ...tokenDecoded
       };
-    } else {
-      const authorization = req.headers.authorization || "";
-      return {
-        authorization,
-        pubsub
-      };
+    } catch (error) {
+      console.log(error);
+      return error;
     }
   }
 });

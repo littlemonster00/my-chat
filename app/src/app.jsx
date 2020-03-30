@@ -6,7 +6,8 @@ import { ApolloProvider } from "react-apollo";
 import client from "./apollo";
 
 // Import components
-import { Header } from "./components/Header.jsx";
+import LoginPage from "./components/LoginPage.jsx";
+import Header from "./components/Header.jsx";
 import MessageViewContainer from "./components/MessageViewContainer.jsx";
 import ChatInput from "./components/ChatInput.jsx";
 import { SideBar } from "./components/SideBar.jsx";
@@ -18,18 +19,20 @@ import "./styles/styles.scss";
 import { pullMessages } from "../src/actions/messages";
 
 const store = configStore();
-const MyChat = props => {
-  return (
-    <div className="workspace">
-      {/* <SideBar /> */}
+const MyChat = props => (
+  <div className="workspace">
+    <SideBar />
+    {/* {!localStorage.getItem("authorization") ? (
+      <LoginPage />
+    ) : (
       <div className="container">
         <Header />
         <MessageViewContainer />
         <ChatInput />
       </div>
-    </div>
-  );
-};
+    )} */}
+  </div>
+);
 
 const App = () => (
   <ApolloProvider client={client}>

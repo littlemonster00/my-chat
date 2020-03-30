@@ -5,6 +5,8 @@ import { Query } from "@apollo/react-components";
 import gql from "graphql-tag";
 
 export class Message extends React.Component {
+  componentDidMount() {}
+
   render() {
     return (
       <div className="message-container">

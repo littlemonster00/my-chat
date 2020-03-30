@@ -6,15 +6,6 @@ import gql from "graphql-tag";
 import { Mutation } from "@apollo/react-components";
 import { ApolloConsumer } from "react-apollo";
 
-const ADD_MESSAGE = gql`
-  mutation addMessage($type: String) {
-    addMessage(text: $type) {
-      id
-      text
-      author
-    }
-  }
-`;
 const SEND_MESSAGE = gql`
   mutation sendMessage($text: String, $channel: String!) {
     sendMessage(text: $text, channel: $channel) {
@@ -76,10 +67,11 @@ export class ChatInput extends React.Component {
                 onClick={e => {
                   sendMessage({
                     variables: {
-                      text: "Hello sang le",
+                      text: this.state.textInput,
                       channel: "5e69ee740a8fa26172d44715"
                     }
                   });
+                  this.state.textInput = "";
                 }}
               >
                 Send
