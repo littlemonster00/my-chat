@@ -19,16 +19,19 @@ import "./styles/styles.scss";
 import { pullMessages } from "../src/actions/messages";
 
 const store = configStore();
-const MyChat = props => {
-  return <LoginPage />;
-  /* <div className="workspace">
+const MyChat = props => (
+  <div className="workspace">
+    {!localStorage.getItem("authorization") ? (
+      <LoginPage />
+    ) : (
       <div className="container">
         <Header />
         <MessageViewContainer />
         <ChatInput />
       </div>
-    </div> */
-};
+    )}
+  </div>
+);
 
 const App = () => (
   <ApolloProvider client={client}>

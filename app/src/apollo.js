@@ -12,7 +12,10 @@ import { getMainDefinition } from "@apollo/client/utilities";
 const wsLink = new WebSocketLink({
   uri: `ws://localhost:4000/graphql`,
   options: {
-    reconnect: true
+    reconnect: true,
+    connectionParams: {
+      authorization: localStorage.getItem("authorization") || null
+    }
   }
 });
 
@@ -25,7 +28,7 @@ const authMiddleware = new ApolloLink((operation, forward) => {
   operation.setContext(({ headers }) => ({
     headers: {
       ...headers,
-      authorization: localStorage.getItem("token") || null
+      authorization: localStorage.getItem("authorization") || null
     }
   }));
 
