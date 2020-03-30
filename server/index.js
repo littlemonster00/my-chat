@@ -24,11 +24,14 @@ const path = "/graphql";
 const server = new ApolloServer({
   typeDefs,
   resolvers,
-  context: async ({ req, connection: { context } = {} }) => {
+  context: async ({ req, connection }) => {
     try {
       let tokenDecoded;
-      if (context) {
-        tokenDecoded = jwt.verify(context.authorization, process.env.MY_SECRET);
+      if (connection) {
+        tokenDecoded = jwt.verify(
+          connection.context.authorization,
+          process.env.MY_SECRET
+        );
       } else {
         tokenDecoded = jwt.verify(
           req.headers.authorization,
@@ -37,13 +40,11 @@ const server = new ApolloServer({
       }
       return {
         pubsub,
-        ...tokenDecoded,
-        ...context
+        ...tokenDecoded
       };
     } catch (error) {
-      return {
-        pubsub
-      };
+      console.log(error);
+      return error;
     }
   }
 });

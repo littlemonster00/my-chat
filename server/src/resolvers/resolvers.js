@@ -35,7 +35,6 @@ const resolvers = {
       return messages;
     },
     channel: async (parent, { id }, context, info) => {
-      console.log(info.messages);
       const { userId } = jwt.verify(
         context.authorization,
         process.env.MY_SECRET
