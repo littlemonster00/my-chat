@@ -10,20 +10,20 @@ const resolvers = {
         .skip(skip)
         .limit(limit);
       return messages;
-    }
+    },
   },
   Message: {
-    author: async parent => {
+    author: async (parent) => {
       const user = await User.findById(parent.author);
       return user;
-    }
+    },
   },
   Query: {
     channels: async (parent, { parId, offset, limit }, context, info) => {
       const channels = await Channel.find({
         participant: {
-          $in: [parId]
-        }
+          $in: [parId],
+        },
       }).populate("participant");
       return channels;
     },
@@ -36,11 +36,18 @@ const resolvers = {
       // Max limit equal 20 messages
       limit = Math.min(20, limit);
       let count = await Message.find({ channel: channelId }).count();
-      const messages = await Message.find({ channel: channelId })
-        .skip(count - limit)
-        .limit(limit);
 
-      return messages;
+      const skiped = offset ? offset : count - limit <= 0 ? 0 : count - limit;
+      const messages = await Message.find({ channel: channelId })
+        .skip(skiped)
+        .limit(limit);
+      console.log(messages[0].author);
+      return {
+        info: {
+          count,
+        },
+        messages,
+      };
     },
     channel: async (parent, { id }, context, info) => {
       const { userId } = jwt.verify(
@@ -61,7 +68,7 @@ const resolvers = {
     },
 
     announcement: () =>
-      `Say hello to the new Apollo Server! A production ready GraphQL server with an incredible getting started experience.`
+      `Say hello to the new Apollo Server! A production ready GraphQL server with an incredible getting started experience.`,
   },
   Mutation: {
     signup: async (parent, { email, password }, context) => {
@@ -69,13 +76,13 @@ const resolvers = {
       if (user) {
         return {
           error: "Email is taken",
-          messages: "Please take an other email."
+          messages: "Please take an other email.",
         };
       } else {
         user = await new User({ email, password }).save();
         return {
           error: "",
-          messages: "Success. You can login with your new account"
+          messages: "Success. You can login with your new account",
         };
       }
     },
@@ -90,19 +97,19 @@ const resolvers = {
             );
             return {
               token,
-              error: ""
+              error: "",
             };
           } else {
             const response = {
               error: "Not authenticated.",
-              token: ""
+              token: "",
             };
             return notAuthenticated(response);
           }
         } else {
           return {
             error: "Email is not existed",
-            token: ""
+            token: "",
           };
         }
       } catch (error) {
@@ -110,14 +117,14 @@ const resolvers = {
       }
     },
     sendMessage: async (parent, { text, channel }, context, info) => {
+      console.log(context);
       try {
         const message = await Channel.sendMessage({
           channel,
           text,
-          // author: context.user.id,
           author: context.userId,
           createdAt: moment(),
-          lastSeen: undefined
+          lastSeen: undefined,
         });
         // Pubsub message to the channel.
         context.pubsub.publish("NEW_MESSAGE", { newMessageOnChannel: message });
@@ -125,20 +132,26 @@ const resolvers = {
       } catch (error) {
         return error;
       }
-    }
+    },
   },
   Subscription: {
     hello: {
       subscribe: (parent, args, context) => {
         return context.pubsub.asyncIterator(["hello"]);
-      }
+      },
     },
     newMessageOnChannel: {
       subscribe: (parent, args, context) => {
+        const authenticated = context.userId;
+        if (!authenticated) {
+          return {
+            error: "Not authentication",
+          };
+        }
         return context.pubsub.asyncIterator(["NEW_MESSAGE"]);
-      }
-    }
-  }
+      },
+    },
+  },
 };
 
 module.exports = resolvers;

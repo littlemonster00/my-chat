@@ -6,17 +6,17 @@ const { v4 } = require("uuid");
 const userSchema = new Schema({
   email: {
     type: String,
-    unique: true
+    unique: true,
   },
   username: {
     type: String,
     unique: true,
-    default: v4()
+    default: v4(),
   },
   password: String,
   display_name: String,
   title: String,
-  avatar: String
+  avatar: String,
 });
 
 // Message Schema
@@ -24,14 +24,14 @@ const messageSchema = new Schema({
   text: String,
   author: {
     type: Schema.Types.ObjectId,
-    ref: "User"
+    ref: "User",
   },
   channel: {
     type: Schema.Types.ObjectId,
-    ref: "Channel"
+    ref: "Channel",
   },
   createdAt: String,
-  lastSeen: String
+  lastSeen: String,
 });
 
 // Channel Schema
@@ -39,20 +39,20 @@ const channelSchema = new Schema({
   participant: [
     {
       type: Schema.Types.ObjectId,
-      ref: "User"
-    }
+      ref: "User",
+    },
   ],
   messages: [
     {
       type: Schema.Types.ObjectId,
-      ref: "Message"
-    }
+      ref: "Message",
+    },
   ],
-  createdAt: String
+  createdAt: String,
 });
 
 // Send messages method
-channelSchema.statics.sendMessage = async function(message) {
+channelSchema.statics.sendMessage = async function (message) {
   const proSendMessage = new Promise(async (resolve, reject) => {
     const messageInstance = await new Message(message).save();
     try {

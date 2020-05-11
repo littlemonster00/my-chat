@@ -40,13 +40,14 @@ const server = new ApolloServer({
       }
       return {
         pubsub,
-        ...tokenDecoded
+        ...tokenDecoded,
       };
     } catch (error) {
-      console.log(error);
-      return error;
+      return {
+        pubsub,
+      };
     }
-  }
+  },
 });
 
 app.use(cors("*"));
