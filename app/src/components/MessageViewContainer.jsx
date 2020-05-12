@@ -67,7 +67,7 @@ export class MessageViewContainer extends React.Component {
       userId: "5e6718b00c3e8966f7e9360a",
       channel: undefined,
       count: 10,
-      hasMoreItems: true
+      hasMoreItems: true,
     };
   }
 
@@ -76,25 +76,6 @@ export class MessageViewContainer extends React.Component {
     element.scrollTop = element.scrollHeight;
   };
 
-  // componentWillMount() {
-  //   this.unsubscribe = this.subscribe(this.props.channelId);
-  // }
-
-  // componentWillReceiveProps({ channelId }) {
-  //   if (this.props.channelId !== channelId) {
-  //     if (this.unsubscribe) {
-  //       this.unsubscribe();
-  //     }
-  //     this.unsubscribe = this.subscribe(channelId);
-  //   }
-  // }
-
-  // componentWillUnmount() {
-  //   if (this.unsubscribe) {
-  //     this.unsubscribe();
-  //   }
-  // }
-
   componentDidUpdate = () => {
     this.updateScroll();
   };
@@ -102,12 +83,12 @@ export class MessageViewContainer extends React.Component {
   render() {
     const {
       data,
-      data: { loading, subscribeToMore, error, messagesOnChannel },
-      id
+      data: { loading, subscribeToMore, error, messagesOnChannel } = {},
+      id,
     } = this.props;
     if (loading) return <h4>Loading...</h4>;
-    if (error) console.log(error);
     console.log(data);
+    if (error) console.log(error);
     return (
       <div className="message-view-container" id="message-views">
         <Messages
@@ -115,15 +96,15 @@ export class MessageViewContainer extends React.Component {
           subscribeToNewMessages={() =>
             subscribeToMore({
               document: newMessageOnChannel,
-              variables: { channelId: "5e69ee740a8fa26172d44715" },
+              variables: { channelId: "5eb8fb209a9f9b7d361034b9" },
               updateQuery: (prev, { subscriptionData }) => {
                 if (!subscriptionData.data) return { ...prev };
                 const newFeedItem = subscriptionData.data.newMessageOnChannel;
                 // prev.messagesOnChannel.shift();
                 return Object.assign({}, prev, {
-                  messagesOnChannel: [...prev.messagesOnChannel, newFeedItem]
+                  messagesOnChannel: [...prev.messagesOnChannel, newFeedItem],
                 });
-              }
+              },
             })
           }
         />
@@ -133,25 +114,19 @@ export class MessageViewContainer extends React.Component {
   componentDidMount() {}
 }
 
-const mapStateToProps = state => {
+const mapStateToProps = (state) => {
   return {
-    messages: state.messages
+    messages: state.messages,
   };
 };
 
-// const mapDispatchToProps = dispatch => {
-//   return {
-//     pullMessages: messages => dispatch(pullMessages(messages))
-//   };
-// };
-
 export default graphql(LOAD_MESSAGES_ON_CHANNEL, {
-  options: props => ({
+  options: (props) => ({
     fetchPolicy: "network-only",
     variables: {
-      channelId: "5e69ee740a8fa26172d44715",
+      channelId: "5eb8fb209a9f9b7d361034b9",
       offset: 0,
-      limit: 20
-    }
-  })
+      limit: 20,
+    },
+  }),
 })(MessageViewContainer);

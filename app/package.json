@@ -6,7 +6,8 @@
   "scripts": {
     "serve": "live-server public/",
     "dev-server": "webpack-dev-server",
-    "build:dev": "webpack --mode=development"
+    "build:dev": "webpack --mode=development",
+    "reactRouter": "babel src/playground/react-router.js --out-file=public/scripts/app.js --presets=env,react --watch"
   },
   "dependencies": {
     "@apollo/client": "^3.0.0-beta.39",

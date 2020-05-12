@@ -30,14 +30,12 @@ const typeDefs = gql`
     messages: [Message]
   }
   type Query {
+    me: User
+    myChannels(limit: Int, offset: Int): [Channel]
     channel(id: String!): Channel
     announcement: String
     user(id: String!): User
-    messagesOnChannel(
-      channelId: String!
-      offset: Int
-      limit: Int
-    ): MessagesOnChannel
+    messagesOnChannel(channelId: String!, offset: Int, limit: Int): [Message]
     channels(parId: String!, offset: Int, limit: Int): [Channel]
   }
   type Mutation {

@@ -5,5 +5,8 @@
   "scripts": {},
   "repository": "git@github.com:littlemonster00/my-chat.git",
   "author": "littlemonster00 <sang.lequang94@gmail.com>",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "react-router-dom": "^5.1.2"
+  }
 }

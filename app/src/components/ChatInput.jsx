@@ -16,28 +16,28 @@ const SEND_MESSAGE = gql`
 
 export class ChatInput extends React.Component {
   state = {
-    textInput: ""
+    textInput: "",
   };
-  handleTextChange = e => {
+  handleTextChange = (e) => {
     const textInput = e.target.value;
     if (textInput !== "\n") {
       e.target.style.cssText = "height:" + e.target.scrollHeight + "px";
       this.setState(() => ({
-        textInput
+        textInput,
       }));
     }
   };
-  onEnterKePress = event => {
+  onEnterKePress = (event) => {
     if (event.keyCode == 13 && !event.shiftKey) {
       this.sendMessage();
       event.target.style.cssText = "height: 36px";
     }
   };
-  onAutoGrow = e => {};
-  sendMessage = e => {
+  onAutoGrow = (e) => {};
+  sendMessage = (e) => {
     this.props.sendMessage({
       author: Math.floor(Math.random() * 2 + 1).toString(),
-      text: this.state.textInput
+      text: this.state.textInput,
     });
     this.setState(() => ({ textInput: "" }));
     document.getElementById("input-msg").style.cssText = "height: 36px";
@@ -56,7 +56,7 @@ export class ChatInput extends React.Component {
               onChange={this.handleTextChange}
               value={this.state.textInput}
               autoFocus
-              ref={c => (this._input = c)}
+              ref={(c) => (this._input = c)}
               onKeyDown={this.onEnterKePress}
               onInput={this.onAutoGrow}
             ></textarea>
@@ -64,12 +64,12 @@ export class ChatInput extends React.Component {
               <button
                 type="submit"
                 className="btn btn-success btn-send-msg"
-                onClick={e => {
+                onClick={(e) => {
                   sendMessage({
                     variables: {
                       text: this.state.textInput,
-                      channel: "5e69ee740a8fa26172d44715"
-                    }
+                      channel: "5eb8fb209a9f9b7d361034b9",
+                    },
                   });
                   this.state.textInput = "";
                 }}
@@ -83,9 +83,9 @@ export class ChatInput extends React.Component {
     );
   }
 }
-const mapDispatchToProps = dispatch => {
+const mapDispatchToProps = (dispatch) => {
   return {
-    sendMessage: message => dispatch(addMessage(message))
+    sendMessage: (message) => dispatch(addMessage(message)),
   };
 };
 export default connect(undefined, mapDispatchToProps)(ChatInput);

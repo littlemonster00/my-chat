@@ -19,6 +19,32 @@ const resolvers = {
     },
   },
   Query: {
+    me: async (parent, {}, context, info) => {
+      const userId = context.userId;
+      const user = await User.findById(userId);
+      return user;
+    },
+    myChannels: async (parent, { limit, offset }, context, info) => {
+      const userId = context.userId;
+      let count = await Message.find({
+        participant: {
+          $in: [userId],
+        },
+      }).count();
+
+      const skiped = offset ? offset : count - limit <= 0 ? 0 : count - limit;
+      const channels = await Channel.find({
+        participant: {
+          $in: [userId],
+        },
+      })
+        .populate("participant")
+        .populate("messages")
+        .skip(skiped)
+        .limit(limit);
+      // console.log(channels);
+      return channels;
+    },
     channels: async (parent, { parId, offset, limit }, context, info) => {
       const channels = await Channel.find({
         participant: {
@@ -42,12 +68,13 @@ const resolvers = {
         .skip(skiped)
         .limit(limit);
       console.log(messages[0].author);
-      return {
-        info: {
-          count,
-        },
-        messages,
-      };
+      return messages;
+      // return {
+      //   info: {
+      //     count,
+      //   },
+      //   messages,
+      // };
     },
     channel: async (parent, { id }, context, info) => {
       const { userId } = jwt.verify(

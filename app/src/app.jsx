@@ -11,7 +11,10 @@ import Header from "./components/Header.jsx";
 import MessageViewContainer from "./components/MessageViewContainer.jsx";
 import ChatInput from "./components/ChatInput.jsx";
 import { SideBar } from "./components/SideBar.jsx";
+import { Channels } from "./components/Channels.jsx";
 import configStore from "./store/configStore";
+import RouterTest from "../playground/react-rounter.js";
+
 import "bootstrap/dist/css/bootstrap.css";
 import "./styles/styles.scss";
 
@@ -19,9 +22,10 @@ import "./styles/styles.scss";
 import { pullMessages } from "../src/actions/messages";
 
 const store = configStore();
-const MyChat = props => (
+const MyChat = (props) => (
   <div className="workspace">
-    <SideBar />
+    {<Channels />}
+    {/* <SideBar /> */}
     {/* {!localStorage.getItem("authorization") ? (
       <LoginPage />
     ) : (
@@ -42,4 +46,5 @@ const App = () => (
   </ApolloProvider>
 );
 
+// const App = () => <Router />;
 ReactDOM.render(<App />, document.getElementById("app"));

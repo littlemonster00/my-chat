@@ -1,4 +1,6 @@
 import React from "react";
+import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+
 import "../styles/components/Channel.scss";
 import { Avatar } from "./Avatar.jsx";
 import { Query } from "@apollo/react-components";
@@ -12,9 +14,9 @@ export class Channel extends React.Component {
       <div className="channel-container">
         <div className="channel_avatar">Avatar</div>
         <div className="channel_content">
-          <a href={this.props.participant.username}>
-            {this.props.participant.username}
-          </a>
+          <Link to="/users">
+            <p>{this.props.participant.username}</p>
+          </Link>
         </div>
         <div className="channel_info">Info</div>
       </div>

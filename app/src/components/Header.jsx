@@ -10,8 +10,8 @@ import gql from "graphql-tag";
 import { Query } from "@apollo/react-components";
 
 const GET_USER_INFO = gql`
-  query user($id: String!) {
-    user(id: $id) {
+  query me {
+    me {
       display_name
       title
       avatar
@@ -22,31 +22,31 @@ const GET_USER_INFO = gql`
 class Header extends React.Component {
   render() {
     const {
-      data: { loading, error, user },
-      id
+      data: { loading, error, me },
+      id,
     } = this.props;
     if (loading) return <h4>Loading...</h4>;
     if (error) return console.log(error);
     return (
       <ApolloConsumer>
-        {client => {
+        {(client) => {
           client.writeQuery({
             query: gql`
               {
                 userInfo
               }
             `,
-            data: { userInfo: user }
+            data: { userInfo: me },
           });
           return (
             <div className="Header">
               <React.Fragment>
                 <div className="header__avatar">
-                  <Avatar visible={true} urlAvatar={user.avatar} />
+                  <Avatar visible={true} urlAvatar={me.avatar} />
                 </div>
                 <div className="header__info">
-                  <h5>{user.display_name}</h5>
-                  <p>{user.title}</p>
+                  <h5>{me.display_name}</h5>
+                  <p>{me.title}</p>
                 </div>
               </React.Fragment>
             </div>
@@ -58,10 +58,7 @@ class Header extends React.Component {
 }
 
 export default graphql(GET_USER_INFO, {
-  options: props => ({
+  options: (props) => ({
     fetchPolicy: "network-only",
-    variables: {
-      id: "5e816e9b7539d77289145900"
-    }
-  })
+  }),
 })(Header);
