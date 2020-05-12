@@ -10,3 +10,5 @@ $ cd app && yarn
 $ yarn run dev-server
 
 ```
+
+![Demo](/assets/demo.gif)
